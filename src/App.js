@@ -1,4 +1,4 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
 import './App.css';
 import initializeAuthentication from './Firebase/firebase.initialize';
 import { useState } from 'react';
@@ -6,14 +6,16 @@ import { useState } from 'react';
 
 initializeAuthentication();
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
+const gitHubProvider = new GithubAuthProvider();
+
 
 function App() {
   const [user, setUser] = useState({});
+  const auth = getAuth();
 
   const handleGoogleSignIn = () => {
-    const auth = getAuth();
-    signInWithPopup(auth, provider)
+    signInWithPopup(auth, googleProvider)
       .then(result => {
         const {displayName, email, photoURL} = result.user;
         
@@ -26,9 +28,20 @@ function App() {
       })
   }
 
+  const handleGitHubSignIn = () => {
+      signInWithPopup(auth, gitHubProvider)
+      .then((result) => {
+        // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+        console.log(result);
+       
+    })
+  }
+
   return (
     <div className="App">
       <button onClick={handleGoogleSignIn}>Google Sign In</button>
+      <button onClick={handleGitHubSignIn}>GitHub Sign In</button>
+
       {
         user.email && <div>
         <h2>Welcome !!! {user.name}</h2>
